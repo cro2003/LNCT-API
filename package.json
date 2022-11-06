@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "description": "",
     "scripts": {
-        "build": "echo \"No build specified\" && exit 1",
+        "build": "api.py",
         "test": "echo \"No test specified\" && exit 1",
         "start": "node api.py"
     },
