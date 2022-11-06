@@ -1,6 +1,7 @@
 {
     "name": "LNCT-API",
     "version": "1.0.0",
+    "main": "api.py",
     "description": "",
     "scripts": {
         "build": "api.py",
