@@ -1,4 +1,5 @@
 import re
+import os
 import json
 import time
 import flask
@@ -190,4 +191,4 @@ def feesStatus(username, password):
         return jsonify(soup)
         
 if __name__ == "__main__":
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', port=os.environ['PORT'])
