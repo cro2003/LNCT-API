@@ -82,11 +82,10 @@ def profile(username, password):
         t = (re.sub(' +', ' ', course))
         g = "".join([s for s in t.strip().splitlines(True) if s.strip()])
         courseInfo = g.replace('\r','').replace('\n','').split(" ")
-        print(courseInfo)
-        course = courseInfo[2]
-        branch = courseInfo[3]
-        semester = courseInfo[5]
-        section = courseInfo[6]
+        course = courseInfo[1]
+        branch = courseInfo[2]
+        semester = courseInfo[4]
+        section = courseInfo[5]
         MNumber = soup.find(id="ctl00_ContentPlaceHolder1_txtSMob")['value']
         email = soup.find(id="ctl00_ContentPlaceHolder1_txtSEmail")['value']
         StuImage = soup.find(id="ctl00_ContentPlaceHolder1_imgphoto")['src']
@@ -100,7 +99,7 @@ def attendancePercentage(username, password):
     main = Pages(username, password)
     soup = main.attendancePage()
     try:
-        name = soup.find_all(class_='mr-2 d-none d-lg-inline text-gray-600 small')[0].get_text().replace(' ', '').replace('\n', '').replace('\r', '')
+        name = re.sub(' +', ' ', soup.find_all(class_='mr-2 d-none d-lg-inline text-gray-600 small')[0].get_text().replace('\n', '').replace('\r', ''))[1:]
         TotalLectures = int(soup.find_all(id='ctl00_ContentPlaceHolder1_lbltotperiod')[0].get_text()[18:])
         present = int(soup.find_all(id='ctl00_ContentPlaceHolder1_lbltotalp')[0].get_text()[13:])
         absent = int(soup.find_all(id='ctl00_ContentPlaceHolder1_lbltotala')[0].get_text()[12:])
@@ -116,7 +115,7 @@ def attendanceDatewise(username, password):
     main = Pages(username, password)
     soup = main.attendancePage()
     try:
-        name = soup.find_all(class_='mr-2 d-none d-lg-inline text-gray-600 small')[0].get_text().replace(' ', '').replace('\n', '').replace('\r', '')
+        name = re.sub(' +', ' ', soup.find_all(class_='mr-2 d-none d-lg-inline text-gray-600 small')[0].get_text().replace('\n', '').replace('\r', ''))[1:]
         table = soup.find('table', class_='mGrid')
         table = table.find_all('tr')
         day = table[1].find_all("td")[1].get_text()
@@ -149,7 +148,7 @@ def attendanceSubjectwise(username, password):
     main = Pages(username, password)
     soup = main.SubjectAttendancePage()
     try:
-        name = soup.find_all(class_='mr-2 d-none d-lg-inline text-gray-600 small')[0].get_text().replace(' ', '').replace('\n', '').replace('\r', '')
+        name = re.sub(' +', ' ', soup.find_all(class_='mr-2 d-none d-lg-inline text-gray-600 small')[0].get_text().replace('\n', '').replace('\r', ''))[1:]
         product = {"name":name, "attendance":[]}
         table = soup.find(class_="mGrid")
         table = table.find_all("tr")
@@ -171,13 +170,12 @@ def feesStatus(username, password):
     main = Pages(username, password)
     soup = main.FeesPage()
     try:
-        product = {"name": soup.find_all(class_='mr-2 d-none d-lg-inline text-gray-600 small')[0].get_text(), "feesInfo":[]}
+        product = {"name": re.sub(' +', ' ', soup.find_all(class_='mr-2 d-none d-lg-inline text-gray-600 small')[0].get_text().replace('\n', '').replace('\r', ''))[1:], "feesInfo":[]}
         feelo = []
         for x in soup.find_all('option'):
             val = x['value']
             data = {'__EVENTTARGET': 'ctl00$ContentPlaceHolder1$ddlfinyear', '__EVENTARGUMENT': '', '__LASTFOCUS': '', '__VIEWSTATE': soup.find(id='__VIEWSTATE')['value'], '__VIEWSTATEGENERATOR': soup.find(id='__VIEWSTATEGENERATOR')['value'], '__VIEWSTATEENCRYPTED': '', '__EVENTVALIDATION': soup.find(id='__EVENTVALIDATION')['value'], 'ctl00$ContentPlaceHolder1$hdnNoOfPrntCopy': '1', 'ctl00$ContentPlaceHolder1$hdnrid': '', 'ctl00$ContentPlaceHolder1$ddlfinyear': val}
             soup = main.FeesPage(data)
-            print(soup)
             table = soup.find(id='ctl00_ContentPlaceHolder1_VSFlexGrid1')
             for z in table.find_all('tr'):
                 if z.find_all('th')==[]:
@@ -193,4 +191,3 @@ def feesStatus(username, password):
         
 if __name__ == "__main__":
     app.run()
-    
