@@ -4,7 +4,6 @@
     "main": "api.py",
     "description": "",
     "scripts": {
-        "build": "api.py",
         "test": "echo \"No test specified\" && exit 1",
         "start": "node api.py"
     },
