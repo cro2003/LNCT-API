@@ -5,7 +5,7 @@
     "description": "",
     "scripts": {
         "test": "echo \"No test specified\" && exit 1",
-        "start": "node api.py"
+        "start": "python api.py"
     },
     "repository": {
         "type": "git",
