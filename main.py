@@ -101,9 +101,9 @@ def attendancePercentage(username, password):
     soup = main.attendancePage()
     try:
         name = re.sub(' +', ' ', soup.find_all(class_='mr-2 d-none d-lg-inline text-gray-600 small')[0].get_text().replace('\n', '').replace('\r', ''))[1:]
-        TotalLectures = int(soup.find_all(id='ctl00_ContentPlaceHolder1_lbltotperiod')[0].get_text()[18:])
-        present = int(soup.find_all(id='ctl00_ContentPlaceHolder1_lbltotalp')[0].get_text()[13:])
-        absent = int(soup.find_all(id='ctl00_ContentPlaceHolder1_lbltotala')[0].get_text()[12:])
+        TotalLectures = int(re.sub('\D', '', soup.find_all(id='ctl00_ContentPlaceHolder1_lbltotperiod')[0].get_text()))
+        present = int(re.sub('\D', '', soup.find_all(id='ctl00_ContentPlaceHolder1_lbltotalp')[0].get_text()))
+        absent = int(re.sub('\D', '', soup.find_all(id='ctl00_ContentPlaceHolder1_lbltotala')[0].get_text()))
         percentage = decimal.Decimal(present*100/TotalLectures)
         percentage = round(percentage,2)
         product = {"name":name, "totalLectures":TotalLectures, "present":present, "absent":absent, "percentage": f"{percentage}"}
@@ -191,4 +191,5 @@ def feesStatus(username, password):
         return jsonify(soup)
         
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=os.environ['PORT'])
+    app.run()
+    #app.run(host='0.0.0.0', port=os.environ['PORT'])
