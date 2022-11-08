@@ -68,7 +68,7 @@ class Pages:
 
 @app.route("/")
 def home():
-    return '<head><meta name="google-site-verification" content="2qCpduxI88HkTnXJHvtGaacBMmMnoRD2bHLWIbLARbI" /><h1> Docs </h1></head><br> <body> 1) /api/profile[username]&[password] => Profile Information <br> 2) /api/attendancePercentage[username]&[password] => Attendance Percentage <br> 3) /api/attendanceDatewise[username]&[password] => Attendance Status sorted on the basis of Datewise <br> 4) /api/attendanceSubjectwise[username]&[password] => Subjectwise Attendance  <br> 5) /api/feeStatus[username]&[password] => Information About the Fees Paid <br> <p><b>NOTE: Kindly Put Username & Password in the place of [username] & [password] respectively! <b><p></body>'
+    return '<head><meta name="google-site-verification" content="2qCpduxI88HkTnXJHvtGaacBMmMnoRD2bHLWIbLARbI" /><link rel="icon" href="https://cdn.discordapp.com/attachments/1039541523311771730/1039541577875468479/logo.jpg" type="image/icon type"><h1> Docs </h1></head><br> <body> 1) /api/profile[username]&[password] => Profile Information <br> 2) /api/attendancePercentage[username]&[password] => Attendance Percentage <br> 3) /api/attendanceDatewise[username]&[password] => Attendance Status sorted on the basis of Datewise <br> 4) /api/attendanceSubjectwise[username]&[password] => Subjectwise Attendance  <br> 5) /api/feeStatus[username]&[password] => Information About the Fees Paid <br> <p><b>NOTE: Kindly Put Username & Password in the place of [username] & [password] respectively! <b><p></body>'
 
 @app.route("/api/profile<username>&<password>")
 def profile(username, password):
