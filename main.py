@@ -68,7 +68,7 @@ class Pages:
 
 @app.route("/")
 def home():
-    return '<title>LNCT API</title><meta name"Description" CONTENT:"Unofficial API for AccSoft of LNCT Group of Colleges. Created By CRO"><head><meta name="google-site-verification" content="2qCpduxI88HkTnXJHvtGaacBMmMnoRD2bHLWIbLARbI" /><link rel="icon" href="https://cdn.discordapp.com/attachments/1039541523311771730/1039541577875468479/logo.jpg" type="image/icon type"><h1> Docs </h1></head><br> <body> 1) /api/profile[username]&[password] => Profile Information <br> 2) /api/attendancePercentage[username]&[password] => Attendance Percentage <br> 3) /api/attendanceDatewise[username]&[password] => Attendance Status sorted on the basis of Datewise <br> 4) /api/attendanceSubjectwise[username]&[password] => Subjectwise Attendance  <br> 5) /api/feeStatus[username]&[password] => Information About the Fees Paid <br> <p><b>NOTE: Kindly Put Username & Password in the place of [username] & [password] respectively! <b><p></body>'
+    return "<head><h1> Docs </h1></head><br> <body> 1) /api/profile[username]&[password] => Profile Information <br> 2) /api/attendancePercentage[username]&[password] => Attendance Percentage <br> 3) /api/attendanceDatewise[username]&[password] => Attendance Status sorted on the basis of Datewise <br> 4) /api/attendanceSubjectwise[username]&[password] => Subjectwise Attendance  <br> 5) /api/feeStatus[username]&[password] => Information About the Fees Paid <br> <p><b>NOTE: Kindly Put Username & Password in the place of [username] & [password] respectively! <b><p></body>"
 
 @app.route("/api/profile<username>&<password>")
 def profile(username, password):
@@ -89,7 +89,10 @@ def profile(username, password):
         section = courseInfo[5]
         MNumber = soup.find(id="ctl00_ContentPlaceHolder1_txtSMob")['value']
         email = soup.find(id="ctl00_ContentPlaceHolder1_txtSEmail")['value']
-        StuImage = soup.find(id="ctl00_ContentPlaceHolder1_imgphoto")['src']
+        if soup.find(id="ctl00_ContentPlaceHolder1_imgphoto")==None:
+            StuImage = "https://cdn.discordapp.com/attachments/1039541523311771730/1060251502389768302/user-icon-flat-isolated-on-white-background-user-symbol-vector-illustration.png"
+        else:
+            StuImage = soup.find(id="ctl00_ContentPlaceHolder1_imgphoto")['src']
         product = {"name": name, "course": course, "branch": branch, "semester": semester, "section": section, "enrollmentId": enrollId, "scholarId": ScholarId, "accsoftId": AccsoftId, "MobileNumber": MNumber, "email": email, "profileImage": StuImage}
         return jsonify(product)
     except:
