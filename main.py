@@ -79,21 +79,15 @@ def profile(username, password):
         enrollId = soup.find(id="ctl00_ContentPlaceHolder1_txtUEnrollNo")['value']
         ScholarId = soup.find(id="ctl00_ContentPlaceHolder1_txtBoardRollNo")['value']
         AccsoftId = soup.find(id="ctl00_ContentPlaceHolder1_txtEnrollNo")['value']
-        course = soup.find(id="messagesDropdown").get_text().strip()
-        t = (re.sub(' +', ' ', course))
-        g = "".join([s for s in t.strip().splitlines(True) if s.strip()])
-        courseInfo = g.replace('\r','').replace('\n','').split(" ")
-        course = courseInfo[1]
-        branch = courseInfo[2]
-        semester = courseInfo[4]
-        section = courseInfo[5]
+        course = soup.find('select', {'name' : 'ctl00$ContentPlaceHolder1$drdClassNew'}).find('option', {'selected': 'selected'}).get_text()
+        section = soup.find('select', {'name' : 'ctl00$ContentPlaceHolder1$drdSection'}).find('option', {'selected': 'selected'}).get_text()
         MNumber = soup.find(id="ctl00_ContentPlaceHolder1_txtSMob")['value']
         email = soup.find(id="ctl00_ContentPlaceHolder1_txtSEmail")['value']
         if soup.find(id="ctl00_ContentPlaceHolder1_imgphoto")==None:
             StuImage = "https://cdn.discordapp.com/attachments/1039541523311771730/1060251502389768302/user-icon-flat-isolated-on-white-background-user-symbol-vector-illustration.png"
         else:
             StuImage = soup.find(id="ctl00_ContentPlaceHolder1_imgphoto")['src']
-        product = {"name": name, "course": course, "branch": branch, "semester": semester, "section": section, "enrollmentId": enrollId, "scholarId": ScholarId, "accsoftId": AccsoftId, "MobileNumber": MNumber, "email": email, "profileImage": StuImage}
+        product = {"name": name, "course": course, "section": section, "enrollmentId": enrollId, "scholarId": ScholarId, "accsoftId": AccsoftId, "MobileNumber": MNumber, "email": email, "profileImage": StuImage}
         return jsonify(product)
     except:
         return jsonify(soup)
@@ -103,7 +97,8 @@ def attendancePercentage(username, password):
     main = Pages(username, password)
     soup = main.attendancePage()
     try:
-        name = re.sub(' +', ' ', soup.find_all(class_='mr-2 d-none d-lg-inline text-gray-600 small')[0].get_text().replace('\n', '').replace('\r', ''))[1:]
+        name = soup.find(class_='pl-4 text-gray')
+        name = name.find('div').get_text()[7:]
         TotalLectures = int(re.sub('\D', '', soup.find_all(id='ctl00_ContentPlaceHolder1_lbltotperiod')[0].get_text()))
         present = int(re.sub('\D', '', soup.find_all(id='ctl00_ContentPlaceHolder1_lbltotalp')[0].get_text()))
         absent = int(re.sub('\D', '', soup.find_all(id='ctl00_ContentPlaceHolder1_lbltotala')[0].get_text()))
@@ -119,7 +114,8 @@ def attendanceDatewise(username, password):
     main = Pages(username, password)
     soup = main.attendancePage()
     try:
-        name = re.sub(' +', ' ', soup.find_all(class_='mr-2 d-none d-lg-inline text-gray-600 small')[0].get_text().replace('\n', '').replace('\r', ''))[1:]
+        name = soup.find(class_='pl-4 text-gray')
+        name = name.find('div').get_text()[7:]        
         table = soup.find('table', class_='mGrid')
         table = table.find_all('tr')
         day = table[1].find_all("td")[1].get_text()
@@ -152,7 +148,8 @@ def attendanceSubjectwise(username, password):
     main = Pages(username, password)
     soup = main.SubjectAttendancePage()
     try:
-        name = re.sub(' +', ' ', soup.find_all(class_='mr-2 d-none d-lg-inline text-gray-600 small')[0].get_text().replace('\n', '').replace('\r', ''))[1:]
+        name = soup.find(class_='pl-4 text-gray')
+        name = name.find('div').get_text()[7:]
         product = {"name":name, "attendance":[]}
         table = soup.find(class_="mGrid")
         table = table.find_all("tr")
@@ -174,7 +171,9 @@ def feesStatus(username, password):
     main = Pages(username, password)
     soup = main.FeesPage()
     try:
-        product = {"name": re.sub(' +', ' ', soup.find_all(class_='mr-2 d-none d-lg-inline text-gray-600 small')[0].get_text().replace('\n', '').replace('\r', ''))[1:], "feesInfo":[]}
+        name = soup.find(class_='pl-4 text-gray')
+        name = name.find('div').get_text()[7:]
+        product = {"name": name, "feesInfo":[]}
         feelo = []
         for x in soup.find_all('option'):
             val = x['value']
@@ -194,4 +193,5 @@ def feesStatus(username, password):
         return jsonify(soup)
         
 if __name__ == "__main__":
+    #app.run()
     app.run(host='0.0.0.0', port=os.environ['PORT'])
