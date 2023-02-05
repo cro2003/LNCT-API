@@ -91,7 +91,6 @@ def profile(username, password):
         MNumber = soup.find(id="ctl00_ContentPlaceHolder1_txtSMob")['value']
         email = soup.find(id="ctl00_ContentPlaceHolder1_txtSEmail")['value']
         college = soup.find("h6").get_text().strip()
-        print(college)
         if soup.find(id="ctl00_ContentPlaceHolder1_imgphoto")==None:
             StuImage = "https://cdn.discordapp.com/attachments/1039541523311771730/1060251502389768302/user-icon-flat-isolated-on-white-background-user-symbol-vector-illustration.png"
         else:
@@ -111,8 +110,11 @@ def attendancePercentage(username, password):
         TotalLectures = int(re.sub('\D', '', soup.find_all(id='ctl00_ContentPlaceHolder1_lbltotperiod')[0].get_text()))
         present = int(re.sub('\D', '', soup.find_all(id='ctl00_ContentPlaceHolder1_lbltotalp')[0].get_text()))
         absent = int(re.sub('\D', '', soup.find_all(id='ctl00_ContentPlaceHolder1_lbltotala')[0].get_text()))
-        percentage = decimal.Decimal(present*100/TotalLectures)
-        percentage = round(percentage,2)
+        if TotalLectures!=0:
+            percentage = decimal.Decimal(present*100/TotalLectures)
+            percentage = round(percentage,2)
+        else:
+            percentage = 0
         product = {"name":name, "totalLectures":TotalLectures, "present":present, "absent":absent, "percentage": f"{percentage}"}
         return jsonify(product)
     except:
@@ -132,7 +134,6 @@ def attendanceDatewise(username, password):
         status = table[1].find_all("td")[4].get_text()
         product = {"name": name, "attendance":[{"day": day, "main": [{"subject": subject, "status": status}]}]}
         product = json.dumps(product)
-        product = json.loads(product)
         previous_day = table[1].find_all('td')[1].get_text()
         for main in table:
             try:
