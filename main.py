@@ -90,11 +90,13 @@ def profile(username, password):
         section = soup.find('select', {'name' : 'ctl00$ContentPlaceHolder1$drdSection'}).find('option', {'selected': 'selected'}).get_text()
         MNumber = soup.find(id="ctl00_ContentPlaceHolder1_txtSMob")['value']
         email = soup.find(id="ctl00_ContentPlaceHolder1_txtSEmail")['value']
+        college = soup.find("h6").get_text().strip()
+        print(college)
         if soup.find(id="ctl00_ContentPlaceHolder1_imgphoto")==None:
             StuImage = "https://cdn.discordapp.com/attachments/1039541523311771730/1060251502389768302/user-icon-flat-isolated-on-white-background-user-symbol-vector-illustration.png"
         else:
             StuImage = soup.find(id="ctl00_ContentPlaceHolder1_imgphoto")['src']
-        product = {"name": name, "course": course, "section": section, "enrollmentId": enrollId, "scholarId": ScholarId, "accsoftId": AccsoftId, "MobileNumber": MNumber, "email": email, "profileImage": StuImage}
+        product = {"name": name, "college": college, "course": course, "section": section, "enrollmentId": enrollId, "scholarId": ScholarId, "accsoftId": AccsoftId, "MobileNumber": MNumber, "email": email, "profileImage": StuImage}
         return jsonify(product)
     except:
         return jsonify(soup)
@@ -200,5 +202,5 @@ def feesStatus(username, password):
         return jsonify(soup)
         
 if __name__ == "__main__":
-    #app.run()
-    app.run(host='0.0.0.0', port=os.environ['PORT'])
+    app.run()
+    #app.run(host='0.0.0.0', port=os.environ['PORT'])
