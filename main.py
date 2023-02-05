@@ -6,7 +6,7 @@ import flask
 import decimal
 import requests
 from bs4 import BeautifulSoup
-from flask import Flask, redirect, url_for, render_template, request, session, flash, jsonify
+from flask import Flask, redirect, url_for, render_template, request, session, flash, jsonify, make_response
 
 app = Flask(__name__)
 class Pages:
@@ -69,6 +69,13 @@ class Pages:
 @app.route("/")
 def home():
     return "<head><h1> Docs </h1></head><br> <body> 1) /api/profile[username]&[password] => Profile Information <br> 2) /api/attendancePercentage[username]&[password] => Attendance Percentage <br> 3) /api/attendanceDatewise[username]&[password] => Attendance Status sorted on the basis of Datewise <br> 4) /api/attendanceSubjectwise[username]&[password] => Subjectwise Attendance  <br> 5) /api/feeStatus[username]&[password] => Information About the Fees Paid <br> <p><b>NOTE: Kindly Put Username & Password in the place of [username] & [password] respectively! <b><p></body>"
+
+@app.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+    return response
 
 @app.route("/api/profile<username>&<password>")
 def profile(username, password):
