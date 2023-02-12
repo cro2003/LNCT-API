@@ -126,29 +126,26 @@ def attendanceDatewise(username, password):
     soup = main.attendancePage()
     try:
         name = soup.find(class_='pl-4 text-gray')
-        name = name.find('div').get_text()[7:]        
-        table = soup.find('table', class_='mGrid')
-        table = table.find_all('tr')
-        day = table[1].find_all("td")[1].get_text()
-        subject = table[1].find_all("td")[3].get_text()
-        status = table[1].find_all("td")[4].get_text()
-        product = {"name": name, "attendance":[{"day": day, "main": [{"subject": subject, "status": status}]}]}
-        product = json.dumps(product)
-        previous_day = table[1].find_all('td')[1].get_text()
-        for main in table:
-            try:
-                date = main.find_all('td')[1].get_text()
-                subject = main.find_all('td')[3].get_text()
-                status = main.find_all('td')[4].get_text()
-                if previous_day == date:
-                    for x in product['attendance']:
-                        if x['day'] == date:
-                            if x['main'][0]['subject'] != subject:
-                                x['main'].append([{ "subject": subject, "status": status }])
-                elif previous_day != date:
-                    product['attendance'].append({ 'day': date, 'main': [{ 'subject': subject, 'status': status }] })
-                previous_day = date
-            except IndexError:pass
+        name = name.find('div').get_text()[7:]
+        product = {"name": name, "attendance":[]}       
+        table = soup.find(class_="mGrid")
+        if table.find("td").get_text()=="Record Not Found":
+            return jsonify(product)
+        table = table.find_all("tr")
+        prevDay = None
+        index = -1
+        for x in table:
+            new = x.find_all("td")
+            if new==[]:continue
+            day = new[1].get_text()
+            subject = new[3].get_text()
+            status = new[4].get_text()
+            if day==prevDay:
+                product["attendance"][index]["main"].append({"subject": subject, "status": status})
+            else:
+                product["attendance"].append({"day": day, "main": [{"subject": subject, "status": status}]})
+                index += 1
+            prevDay = day
         return jsonify(product)
     except:
         return jsonify(soup)
@@ -162,16 +159,17 @@ def attendanceSubjectwise(username, password):
         name = name.find('div').get_text()[7:]
         product = {"name":name, "attendance":[]}
         table = soup.find(class_="mGrid")
+        if table==None:
+            return jsonify(product)
         table = table.find_all("tr")
         for main in table:
-            try:
-                row = main.find_all('td')
-                subject = row[0].get_text()
-                ssn = row[1].get_text()
-                TotalLectures = int(row[2].get_text())
-                AttendedLectures = int(row[3].get_text())
-                product["attendance"].append({"subject":subject, "subShort":ssn, "totalLectures": TotalLectures, "present": AttendedLectures, "absent": TotalLectures - AttendedLectures})
-            except IndexError:pass
+            row = main.find_all('td')
+            if row==[]:continue
+            subject = row[0].get_text()
+            ssn = row[1].get_text()
+            TotalLectures = int(row[2].get_text())
+            AttendedLectures = int(row[3].get_text())
+            product["attendance"].append({"subject":subject, "subShort":ssn, "totalLectures": TotalLectures, "present": AttendedLectures, "absent": TotalLectures - AttendedLectures})
         return jsonify(product)
     except:
         return jsonify(soup)
